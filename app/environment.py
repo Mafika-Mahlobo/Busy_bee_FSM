@@ -28,13 +28,13 @@ class Environment:
         self._bees = []
         self._flowers = []
 
-    def grid(self):
+    def grid(self) -> None:
         for row in self._grid:
             for _ in row:
                 print(_, end=' ')
             print()
 
-    def load_actors(self, actors : List[any]):
+    def load_actors(self, actors : List[any]) -> None:
 
         for actor in actors:
             
