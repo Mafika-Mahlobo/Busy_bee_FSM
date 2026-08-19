@@ -28,6 +28,18 @@ class Environment:
         self._bees = []
         self._flowers = []
 
+    def query_cell(self, position : tuple) -> bool:
+        y, x = position
+        if y <= len(self._grid) or x <= len(self._grid[0]):
+            if self._grid[y][x] == 0:
+                return True
+            return False
+        return False
+
+    def get_grid(self):
+        return self._grid
+
+    @property
     def grid(self) -> None:
         for row in self._grid:
             for _ in row:
@@ -44,5 +56,6 @@ class Environment:
                 if self._grid[new_position[0]][new_position[1]] == 0:
                     actor._position = new_position
                     self._grid[new_position[0]][new_position[1]] = actor
+                    self._bees.append(actor)
                     actor._isActive = True
         
