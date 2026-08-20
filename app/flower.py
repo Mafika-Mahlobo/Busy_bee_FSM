@@ -10,6 +10,7 @@ class Flower:
         self._position = position
         self._id = Flower._id
         Flower._id += 1
+        self._pollen = 5
         self._isActive = False
 
     def __repr__(self):

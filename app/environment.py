@@ -22,8 +22,10 @@ class Environment:
         
         self._hive = {
             'position': (randint(0, height - 1), randint(0, width - 1)),
-            'repr': 'H'
+            'pollen_count': 0,
+            'repr': f'H0'
         }
+
         self._grid[self._hive['position'][0]][self._hive['position'][1]] = self._hive['repr']
 
         self._actors = []
@@ -48,7 +50,7 @@ class Environment:
             for _ in row:
                 print(_, end=' ')
             print()
-        time.sleep(2)
+        time.sleep(0.3)
 
     def load_actors(self, actors : List[any]) -> None:
 
