@@ -6,7 +6,6 @@ This module defines a bee agent
 
 from app.flower import Flower
 from app.threat import Threat
-from app.environment import Environment
 
 STATES = {
      'wondering': 1,
@@ -40,11 +39,12 @@ class Bee:
 
     def foraging(self):
         self._pollen += 1
-        flower = self._environment.get_grid()[self._position[0]][self._position[1]]
-        flower._isActive = False
+        Threat = self._environment.get_grid()[self._position[0]][self._position[1]]
+        Threat._isActive = False
         self._state = STATES['to_hive']
 
     def attacking(self) -> None:
+        self._health -= 10
         threat = self._environment.get_grid()[self._position[0]][self._position[1]]
         threat._isActive = False
         self._environment._pheromoneGrid[threat._position[0]][threat._position[1]] = MAX_PHEROMONE_STRENGTH
@@ -84,11 +84,11 @@ class Bee:
                 break
             elif isinstance(cell, Bee):
                 continue
+
             elif isinstance(cell, Flower):
                 self._position = (cell._position[0], cell._position[1])
                 self._state = STATES['foraging']
                 self.foraging()
-                break
 
             elif isinstance(cell, Threat):
                 self._position = (cell._position[0], cell._position[1])
@@ -119,6 +119,7 @@ class Bee:
                     self._state = STATES['foraging']
                     self.foraging()
                     
+                    
                 elif isinstance(next_cell, Threat):
                     self._position = (next_cell._position[0], next_cell._position[1])
                     self._state = STATES['attacking']
@@ -146,16 +147,18 @@ class Bee:
                 break
             elif isinstance(cell, Bee):
                 continue
+
             elif isinstance(cell, Flower):
                 self._position = (cell._position[0], cell._position[1])
                 self._state = STATES['foraging']
                 self.foraging()
-                break
+                
             elif isinstance(cell, Threat):
                 self._position = (cell._position[0], cell._position[1])
                 self._state = STATES['attacking']
                 self.attacking()
                 break
+
             elif isinstance(cell, str) and cell.startswith('H'):
                 if self._pollen > 0:
                     self.deposit_pollen()
@@ -163,22 +166,29 @@ class Bee:
         else:
             previous_row = self._position[0] - 1
             if previous_row >= 0:
+
                 previous_cell = self._environment.get_grid()[previous_row][-1]
+
                 if previous_cell == 0:
                     self._position = (previous_row, len(current_row) - 1)
+
                 elif isinstance(previous_cell, Bee):
                     if len(current_row) > 1:
                         self._position = (previous_row, len(current_row) - 2)
                     else:
                         self._direction = 1
+
                 elif isinstance(previous_cell, Flower):
                     self._position = (previous_cell._position[0], previous_cell._position[1])
                     self._state = STATES['foraging']
                     self.foraging()
+                   
+
                 elif isinstance(previous_cell, Threat):
                     self._position = (previous_cell._position[0], previous_cell._position[1])
                     self._state = STATES['attacking']
                     self.attacking()
+                    
                 elif isinstance(previous_cell, str) and previous_cell.startswith('H'):
                     if self._pollen > 0:
                         self.deposit_pollen()
@@ -212,8 +222,10 @@ class Bee:
             self._direction = 1
 
         if self._direction == 1:
+            self._energy -= 1
             self.navigate_fwd()
         else:
+            self._energy -= 1
             self.navigate_bck()
 
 
@@ -221,6 +233,9 @@ class Bee:
         self._isActive = False
 
     def update(self):
+
+        if self._health < 1 or self._energy < 1:
+            self._state = STATES['die']
 
         match self._state:
             case 1:

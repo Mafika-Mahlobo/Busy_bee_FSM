@@ -44,7 +44,7 @@ class Environment:
     @property
     def grid(self) -> None:
 
-        print('\033[H\033[J', end='') # Replace grid with new one for each environment update
+        print('\033[H\033[J', end='') # Erase existing grid
 
         for row in self._grid:
             for _ in row:
