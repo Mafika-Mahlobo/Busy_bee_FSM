@@ -3,9 +3,9 @@ from app.bee import Bee
 from app.flower import Flower
 from app.threat import Threat
 
-env = Environment(10, 10)
+env = Environment(5, 5)
 actors = []
-for i in range(7):
+for i in range(1):
     actors.append(Bee(environment=env))
     actors.append(Flower())
     actors.append(Threat())
@@ -13,8 +13,9 @@ for i in range(7):
 env.load_actors(actors)
 
 while True:
-    for agent in env._bees:
+    for agent in env._actors:
         if isinstance(agent, Bee):
             agent.update()
+            env.update()
             env.grid
         print()
